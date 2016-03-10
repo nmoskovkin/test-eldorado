@@ -9,7 +9,7 @@ class ParserResult
     /**
      * Tokens.
      *
-     * @var array
+     * @var array Tokens
      */
     private $tokens = array();
 
