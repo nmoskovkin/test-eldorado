@@ -9,7 +9,7 @@ class Parser
     const INT_REGEXP = '(?:[+-]?[1-9][0-9]*)';
     const FLOAT_REGEXP = '(?:[+-]?0?\.[0-9]+)';
     const NUMBER_REGEXP = '(?:0|%INT_REGEXP%|%FLOAT_REGEXP%)';
-    const EXPRESSION_REGEXP = '/(%NUMBER_REGEXP%)([\+\-\*\/])(%NUMBER_REGEXP%)/';
+    const EXPRESSION_REGEXP = '/^(%NUMBER_REGEXP%)([\+\-\*\/])(%NUMBER_REGEXP%)$/';
 
     /**
      * Keeps regexp with template replacement.

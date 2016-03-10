@@ -3,12 +3,19 @@ use Backend\Api\ValidationException;
 use Backend\Expression\Calculator;
 use Backend\Expression\Parser;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
 
-$app->post('/expression/evaluate', function(Request $request) {
+$app->get('/expression/evaluate', function(Request $request)
+{
+    if (!$request->get('jsonp_callback')) {
+        throw new NotFoundHttpException;
+    }
+
     try {
         $expression = $request->get('expression');
 
@@ -22,10 +29,10 @@ $app->post('/expression/evaluate', function(Request $request) {
         $calculator = new Calculator();
         $evaluatingResult = $calculator->calculate($parsingResult);
 
-        return json_encode(array(
+        $result = array(
             'status' => true,
             'result' => $evaluatingResult
-        ));
+        );
     } catch (\Exception $e) {
         switch (true) {
             case $e instanceof \Backend\Api\ValidationException:
@@ -39,11 +46,17 @@ $app->post('/expression/evaluate', function(Request $request) {
                 $error = 'Internal error.';
         }
 
-        return json_encode(array(
+        $result = array(
             'status' => false,
             'error' => $error
-        ));
+        );
     }
+
+    $response = new Response();
+    $response->headers->set('Content-Type', 'application/javascript');
+    $response->setContent($request->get('jsonp_callback') . '(' . json_encode($result). ');');
+
+    return $response;
 });
 
 $app->run();
