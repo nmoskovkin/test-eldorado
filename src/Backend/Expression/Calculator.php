@@ -21,6 +21,20 @@ class Calculator
             throw new \InvalidArgumentException;
         }
 
+        // Big first number
+        if (!filter_var($tokens[0], FILTER_VALIDATE_INT)
+            && !filter_var($tokens[0], FILTER_VALIDATE_FLOAT)
+        ) {
+            throw new EvaluateException('Big first number.');
+        }
+
+        // Big second number
+        if (!filter_var($tokens[2], FILTER_VALIDATE_INT)
+            && !filter_var($tokens[2], FILTER_VALIDATE_FLOAT)
+        ) {
+            throw new EvaluateException('Big second number.');
+        }
+
         switch($tokens[1]) {
             case '+':
                 return $tokens[0] + $tokens[2];
